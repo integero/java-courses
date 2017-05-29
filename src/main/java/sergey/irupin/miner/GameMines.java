@@ -12,14 +12,25 @@ public class GameMines {
     private Cell[][] field;
     private int boardSize;
     private int nuberOfMines;
+    private UserFace userF=new UserFace();
 
     private int xt;
     private int yt;
     private boolean markBomb;
-    private int[] dy={-1,-1,-1,0,0,1,1,1};
-    private int[] dx={-1,0,1,-1,1,-1,0,1};
 
-    GameMines(int boardSize,int nuOfMi) {
+    public void setXt(int xt) {
+        this.xt = xt;
+    }
+
+    public void setYt(int yt) {
+        this.yt = yt;
+    }
+
+    public void setMarkBomb(boolean markBomb) {
+        this.markBomb = markBomb;
+    }
+
+    GameMines(int boardSize, int nuOfMi) {
         this.boardSize=boardSize;
         this.nuberOfMines = nuOfMi;
         this.field=new Cell[boardSize][boardSize];
@@ -39,19 +50,8 @@ public class GameMines {
     }
 
     boolean oneStep() {
-        getChois(); // получаем координаты и действие
-        Cell ce = field[yt][xt];
-        if (markBomb) {       //помечаем-распомечаем ячейку - бомба
-            ce.setMarktAsBomb(!ce.isMarktAsBomb());
-            return true;
-        }
-        if (!ce.isMine()) { //открываем, если не бомба
-            cellsOpen(xt, yt);
-            return true;
-        } else {
-            ce.setBlown(true);
-            return false;
-        }
+        userF.getChois(boardSize); // получаем координаты и действие
+        field[yt][xt].makeJob(markBomb);
 
 //        return true;
     }
@@ -61,38 +61,30 @@ public class GameMines {
         if (field[yt][xt].isOpen()) return;
         if (field[yt][xt].isMine()) return;
         field[yt][xt].setOpen(true);
-        for (int i = 0; i < 8; i++) {
-            cellsOpen(xt+dx[i],yt+dy[i]);
+        for (int i =xt-1  ; i < xt+2; i++) {
+            for (int j = yt - 1; j < yt + 2; j++) {
+                cellsOpen(i,j);
+            }
         }
     }
 
-    void getChois() {
-        BufferedReader reader = new BufferedReader( new InputStreamReader(System.in));
-        try {
-            do {
-                String[] s=reader.readLine().split(" ");
-                xt = Integer.parseInt(s[0]);
-                yt = Integer.parseInt(s[1]);
-                markBomb = (Integer.parseInt(s[2]) == 0) ? false : true;
-            } while (!isIn(xt,yt));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     void initMines(int nMines){
+        Cell ce;
         int coM=0;
         while (coM != nMines) {
             boolean secces = false;
             do {
                 int x = (int) (Math.random() * boardSize);
                 int y = (int) (Math.random() * boardSize);
-                if (field[y][x].isMine()) continue;
-                field[y][x].setMine(true);       //при вариации с бомбами добавить в Cell бомбы и их инициацию
-                for (int i = 0; i < 8; i++) {
-                    int xdx = x + dx[i];
-                    int ydy = y + dy[i];
-                    if (isIn(xdx,ydy)) field[ydy][xdx].setCountNeighbors(field[ydy][xdx].getCountNeighbors()+1);
+                ce=field[y][x];
+                if (ce.isMine()) continue;
+                ce.setMine(true);       //при вариации с бомбами добавить в Cell бомбы и их инициацию
+                for (int i =x-1  ; i < x+2; i++) {
+                    for (int j = y-1; j < y+2; j++) {
+                        if (isIn(i,j)) ce.setCountNeighbors(ce.getCountNeighbors()+1);
+                    }
                 }
                 secces = true;
                 coM++;
@@ -100,7 +92,8 @@ public class GameMines {
         }
     }
 
-    private boolean isIn(int x, int y) {
+//    private boolean isIn(int x, int y) {
+    protected boolean isIn(int x, int y) {
         if (x<0||x>=boardSize||y<0||y>=boardSize) return false;
         return true;
     }

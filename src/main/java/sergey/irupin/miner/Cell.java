@@ -53,4 +53,20 @@ public class Cell {
 
     public Cell() {
     }
+
+    public boolean makeJob(Cell cell,boolean isMine) {
+        if (isMine) {       //помечаем-распомечаем ячейку - бомба
+            this.isMarktAsBomb=!this.isMarktAsBomb;
+//            cell.setMarktAsBomb(!cell.isMarktAsBomb());
+            return false;
+        }
+        if (!this.isMine) { //открываем, если не бомба
+//            cellsOpen(xt, yt);
+            return true;
+        } else {
+            this.setBlown(true);
+            return false;
+        }
+
+    }
 }
