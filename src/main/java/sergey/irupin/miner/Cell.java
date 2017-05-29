@@ -6,10 +6,9 @@ package sergey.irupin.miner;
 public class Cell {
     private boolean isMine;
     private boolean isOpen;
-    private boolean isExploid;
+    private boolean isBlown;
     private boolean isMarktAsBomb;
     private int countNeighbors;
-    private boolean isFlag;
 
     public boolean isMarktAsBomb() {
         return isMarktAsBomb;
@@ -19,12 +18,12 @@ public class Cell {
         isMarktAsBomb = marktAsBomb;
     }
 
-    public boolean isExploid() {
-        return isExploid;
+    public boolean isBlown() {
+        return isBlown;
     }
 
-    public void setExploid(boolean exploid) {
-        isExploid = exploid;
+    public void setBlown(boolean exploid) {
+        isBlown = exploid;
     }
 
     public boolean isMine() {
@@ -43,14 +42,6 @@ public class Cell {
         isOpen = open;
     }
 
-    public boolean isFlag() {
-        return isFlag;
-    }
-
-    public void setFlag(boolean flag) {
-        isFlag = flag;
-    }
-
     public int getCountNeighbors() {
         return countNeighbors;
     }
@@ -61,9 +52,5 @@ public class Cell {
 
 
     public Cell() {
-//        this.isMine = false;
-//        this.isOpen = false;
-//        this.isFlag = false;
-//        this.countNeighbors = 0;
     }
 }
