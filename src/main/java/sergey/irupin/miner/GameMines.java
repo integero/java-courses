@@ -1,9 +1,5 @@
 package sergey.irupin.miner;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-import com.sun.xml.internal.ws.wsdl.parser.InaccessibleWSDLException;
-
-import java.io.*;
 
 /**
  * Created by Padre on 26.05.2017.
@@ -12,27 +8,34 @@ public class GameMines {
     private Cell[][] field;
     private int boardSize;
     private int nuberOfMines;
-    private UserFace userF=new UserFace();
+    private int openedCells;
+    private int cellsWithoutBombs;
+    private UserFace userF;
 
-    private int xt;
-    private int yt;
-    private boolean markBomb;
+//    private int xt;
+//    private int yt;
+//    private boolean markBomb;
+    private Uchoise cho;
+    private PrintPrepare pf;
+//    public void setXt(int xt) {
+//        this.xt = xt;
+//    }
+//    public void setYt(int yt) {
+//        this.yt = yt;
+//    }
 
-    public void setXt(int xt) {
-        this.xt = xt;
-    }
-
-    public void setYt(int yt) {
-        this.yt = yt;
-    }
-
-    public void setMarkBomb(boolean markBomb) {
-        this.markBomb = markBomb;
-    }
+//    public void setMarkBomb(boolean markBomb) {
+//        this.markBomb = markBomb;
+//    }
 
     GameMines(int boardSize, int nuOfMi) {
         this.boardSize=boardSize;
         this.nuberOfMines = nuOfMi;
+        this.openedCells=0;
+        this.cellsWithoutBombs=boardSize*boardSize-nuOfMi;
+        this.userF = new UserFace();
+        this.cho = new Uchoise();
+//        this.pf = new PrintPrepare();
         this.field=new Cell[boardSize][boardSize];
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
@@ -45,30 +48,54 @@ public class GameMines {
     private void run() {
         initMines(nuberOfMines);
         do{
-            paint();
+            pf=new PrintPrepare(field,boardSize,0);
+//            pf.paintPrepare(field,boardSize,0);
         }while (oneStep());
+        if (openedCells==cellsWithoutBombs)
+            pf=new PrintPrepare(field,boardSize,1);
+        else
+            pf=new PrintPrepare(field,boardSize,-1);
     }
 
     boolean oneStep() {
-        userF.getChois(boardSize); // получаем координаты и действие
-        field[yt][xt].makeJob(markBomb);
+        boolean continueGame=true;
+        userF.getChois(cho,boardSize); // получаем координаты и действие xt,yt,markBomb
+//        xt=cho.x;
+//        yt=cho.y;
+//        markBomb=cho.bomb;
+//        if (field[yt][xt].makeJob(markBomb)) cellsOpen(xt,yt);
+//        если не бомба,
+        if (field[cho.x][cho.y].makeJob(cho.bomb)) {    // не бомба, открываем всё, что возможно
+            if (field[cho.x][cho.y].getCountNeighbors() == 0)
+                cellsOpen(cho.x, cho.y);
+            else {
+                field[cho.x][cho.y].setOpen(true);
+                openedCells++;
+            }
+//            continueGame = true;
+        } else {    // БОМБА или пометка. Если БОМБА, решаем что делать
+            if (field[cho.x][cho.y].isMine())
+            continueGame=bombOpen(field[cho.x][cho.y]);
+        }
+        System.out.println(openedCells+" * "+cellsWithoutBombs);
+        if (openedCells==cellsWithoutBombs) continueGame = false;
 
-//        return true;
+            return continueGame;
     }
 
-    void cellsOpen(int xt, int yt) {
-        if (!isIn(xt,yt))return;
-        if (field[yt][xt].isOpen()) return;
-        if (field[yt][xt].isMine()) return;
-        field[yt][xt].setOpen(true);
-        for (int i =xt-1  ; i < xt+2; i++) {
-            for (int j = yt - 1; j < yt + 2; j++) {
+    void cellsOpen(int x, int y) {
+        if (!isIn(x,y))return;
+        Cell ce = field[x][y];
+        if (ce.isOpen()||ce.isMine()) return;
+        ce.setOpen(true);
+        this.openedCells++;
+        if (ce.getCountNeighbors()>0) return;
+        for (int i =x-1  ; i < x+2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
                 cellsOpen(i,j);
             }
         }
     }
-
-
 
     void initMines(int nMines){
         Cell ce;
@@ -78,52 +105,26 @@ public class GameMines {
             do {
                 int x = (int) (Math.random() * boardSize);
                 int y = (int) (Math.random() * boardSize);
-                ce=field[y][x];
+                ce=field[x][y];
                 if (ce.isMine()) continue;
                 ce.setMine(true);       //при вариации с бомбами добавить в Cell бомбы и их инициацию
                 for (int i =x-1  ; i < x+2; i++) {
                     for (int j = y-1; j < y+2; j++) {
-                        if (isIn(i,j)) ce.setCountNeighbors(ce.getCountNeighbors()+1);
+                        if (isIn(i,j)) field[i][j].setCountNeighbors(field[i][j].getCountNeighbors()+1);
                     }
                 }
                 secces = true;
                 coM++;
             } while (!secces);
         }
-    }
+    }   // похоже надо вынести
 
-//    private boolean isIn(int x, int y) {
     protected boolean isIn(int x, int y) {
         if (x<0||x>=boardSize||y<0||y>=boardSize) return false;
         return true;
     }
 
-    public void paint() {
-        String sPrint;
-        System.out.print("   ");
-        for (int i = 0; i < boardSize; i++)
-            System.out.print("("+i+")");
-        System.out.println();
-        for (int i = 0; i < boardSize; i++) {
-            System.out.print("("+i+")");
-            for (int j = 0; j < boardSize; j++) {
-                Cell ce = field[j][i];
-                if (ce.isOpen()) {
-                    if (ce.getCountNeighbors() == 0) {
-                        sPrint = "[ ]";
-                    } else {
-                        sPrint = "[" + ce.getCountNeighbors() + "]";
-                    }
-                } else {
-                    if (ce.isMarktAsBomb()) {
-                        sPrint = "[F]";
-                    } else {
-                        sPrint="[+]";
-                    }
-                }
-                System.out.print(sPrint);
-            }
-            System.out.println();
-        }
-        }
+    private boolean bombOpen(Cell ce) {
+        return !(ce.isMine() && ce.isOpen());
+    }
 }

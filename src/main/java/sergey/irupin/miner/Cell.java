@@ -6,7 +6,7 @@ package sergey.irupin.miner;
 public class Cell {
     private boolean isMine;
     private boolean isOpen;
-    private boolean isBlown;
+//    private boolean isBlown;
     private boolean isMarktAsBomb;
     private int countNeighbors;
 
@@ -14,17 +14,17 @@ public class Cell {
         return isMarktAsBomb;
     }
 
-    public void setMarktAsBomb(boolean marktAsBomb) {
-        isMarktAsBomb = marktAsBomb;
-    }
+//    public void setMarktAsBomb(boolean marktAsBomb) {
+//        isMarktAsBomb = marktAsBomb;
+//    }
 
-    public boolean isBlown() {
-        return isBlown;
-    }
+//    public boolean isBlown() {
+//        return isBlown;
+//    }
 
-    public void setBlown(boolean exploid) {
-        isBlown = exploid;
-    }
+//    public void setBlown(boolean exploid) {
+//        isBlown = exploid;
+//    }
 
     public boolean isMine() {
         return isMine;
@@ -54,19 +54,18 @@ public class Cell {
     public Cell() {
     }
 
-    public boolean makeJob(Cell cell,boolean isMine) {
-        if (isMine) {       //помечаем-распомечаем ячейку - бомба
+    public boolean makeJob(boolean markAsBomb) {
+        if (markAsBomb) {       //помечаем-распомечаем ячейку - бомба
             this.isMarktAsBomb=!this.isMarktAsBomb;
-//            cell.setMarktAsBomb(!cell.isMarktAsBomb());
             return false;
         }
-        if (!this.isMine) { //открываем, если не бомба
-//            cellsOpen(xt, yt);
+//        открываем ячейку
+        if (!this.isMine) { // если не бомба, говорим,что надо открыть её и окружение
             return true;
-        } else {
-            this.setBlown(true);
+        } else {            // открываем бомбу, обрабоку передаём наверх
+            this.isOpen = true;
+//            this.isBlown=true;
             return false;
         }
-
     }
 }

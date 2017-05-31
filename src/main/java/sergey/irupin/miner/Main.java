@@ -5,7 +5,7 @@ package sergey.irupin.miner;
  */
 public class Main {
     public static void main(String[] args) {
-        GameMines gameMines=new GameMines(4,3);
+        GameMines gameMines=new GameMines(6,4);
     }
 
 }
