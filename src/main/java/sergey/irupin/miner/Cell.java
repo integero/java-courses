@@ -6,25 +6,12 @@ package sergey.irupin.miner;
 public class Cell {
     private boolean isMine;
     private boolean isOpen;
-//    private boolean isBlown;
     private boolean isMarktAsBomb;
     private int countNeighbors;
 
     public boolean isMarktAsBomb() {
         return isMarktAsBomb;
     }
-
-//    public void setMarktAsBomb(boolean marktAsBomb) {
-//        isMarktAsBomb = marktAsBomb;
-//    }
-
-//    public boolean isBlown() {
-//        return isBlown;
-//    }
-
-//    public void setBlown(boolean exploid) {
-//        isBlown = exploid;
-//    }
 
     public boolean isMine() {
         return isMine;
@@ -64,7 +51,6 @@ public class Cell {
             return true;
         } else {            // открываем бомбу, обрабоку передаём наверх
             this.isOpen = true;
-//            this.isBlown=true;
             return false;
         }
     }

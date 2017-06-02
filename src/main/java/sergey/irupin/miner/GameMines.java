@@ -11,22 +11,12 @@ public class GameMines {
     private int openedCells;
     private int cellsWithoutBombs;
     private UserFace userF;
-
-//    private int xt;
-//    private int yt;
-//    private boolean markBomb;
     private Uchoise cho;
     private PrintPrepare pf;
-//    public void setXt(int xt) {
-//        this.xt = xt;
-//    }
-//    public void setYt(int yt) {
-//        this.yt = yt;
-//    }
 
-//    public void setMarkBomb(boolean markBomb) {
-//        this.markBomb = markBomb;
-//    }
+    public int getBoardSize() {
+        return boardSize;
+    }
 
     GameMines(int boardSize, int nuOfMi) {
         this.boardSize=boardSize;
@@ -35,35 +25,31 @@ public class GameMines {
         this.cellsWithoutBombs=boardSize*boardSize-nuOfMi;
         this.userF = new UserFace();
         this.cho = new Uchoise();
-//        this.pf = new PrintPrepare();
+        this.pf = new PrintPrepare();
         this.field=new Cell[boardSize][boardSize];
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
+        for (int i = 0; i < boardSize; i++)
+            for (int j = 0; j < boardSize; j++)
                 field[j][i]=new Cell();
-            }
-        }
-        run();
+//        run();
     }
 
-    private void run() {
+    public void run() {
         initMines(nuberOfMines);
         do{
-            pf=new PrintPrepare(field,boardSize,0);
-//            pf.paintPrepare(field,boardSize,0);
+            pf.paintPrepare(field,boardSize,0);
+//            pf=new PrintPrepare(field,boardSize,0);
         }while (oneStep());
         if (openedCells==cellsWithoutBombs)
-            pf=new PrintPrepare(field,boardSize,1);
+            pf.paintPrepare(field,boardSize,1);
+//            pf=new PrintPrepare(field,boardSize,1);
         else
-            pf=new PrintPrepare(field,boardSize,-1);
+            pf.paintPrepare(field, boardSize, -1);
+//            pf=new PrintPrepare(field,boardSize,-1);
     }
 
     boolean oneStep() {
         boolean continueGame=true;
         userF.getChois(cho,boardSize); // получаем координаты и действие xt,yt,markBomb
-//        xt=cho.x;
-//        yt=cho.y;
-//        markBomb=cho.bomb;
-//        if (field[yt][xt].makeJob(markBomb)) cellsOpen(xt,yt);
 //        если не бомба,
         if (field[cho.x][cho.y].makeJob(cho.bomb)) {    // не бомба, открываем всё, что возможно
             if (field[cho.x][cho.y].getCountNeighbors() == 0)
@@ -77,7 +63,7 @@ public class GameMines {
             if (field[cho.x][cho.y].isMine())
             continueGame=bombOpen(field[cho.x][cho.y]);
         }
-        System.out.println(openedCells+" * "+cellsWithoutBombs);
+//        System.out.println(openedCells+" * "+cellsWithoutBombs);
         if (openedCells==cellsWithoutBombs) continueGame = false;
 
             return continueGame;
