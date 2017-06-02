@@ -25,12 +25,12 @@ public class GameMines {
         this.cellsWithoutBombs=boardSize*boardSize-nuOfMi;
         this.userF = new UserFace();
         this.cho = new Uchoise();
-        this.pf = new PrintPrepare();
         this.field=new Cell[boardSize][boardSize];
         for (int i = 0; i < boardSize; i++)
             for (int j = 0; j < boardSize; j++)
                 field[j][i]=new Cell();
-//        run();
+        pf = new PrintPrepare();
+        run();
     }
 
     public void run() {
@@ -63,7 +63,7 @@ public class GameMines {
             if (field[cho.x][cho.y].isMine())
             continueGame=bombOpen(field[cho.x][cho.y]);
         }
-//        System.out.println(openedCells+" * "+cellsWithoutBombs);
+        System.out.println(openedCells+" * "+cellsWithoutBombs);
         if (openedCells==cellsWithoutBombs) continueGame = false;
 
             return continueGame;
