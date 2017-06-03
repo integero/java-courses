@@ -1,0 +1,4 @@
+Правила взяты из
+ http://play-minesweeper.com/
+GuiMain переделан из
+ https://github.com/biblelamp/JavaExercises/blob/master/GameMines.java

@@ -1,7 +1,7 @@
-package sergey.irupin.miner;
+package nuevo.bombero;
 
 /**
- * Created by Padre on 26.05.2017.
+ * Created by Padre on 03.06.2017.
  */
 public class Cell {
     private boolean isMine;
@@ -44,7 +44,8 @@ public class Cell {
     public boolean makeJob(boolean markAsBomb) {
         if (markAsBomb) {       //помечаем-распомечаем ячейку - бомба
             this.isMarktAsBomb=!this.isMarktAsBomb;
-            return false;
+            return true;
+//            return false;
         }
 //        открываем ячейку
         if (!this.isMine) { // если не бомба, говорим,что надо открыть её и окружение
@@ -55,3 +56,4 @@ public class Cell {
         }
     }
 }
+
