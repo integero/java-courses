@@ -9,21 +9,14 @@ import java.util.Timer;
 class GuiMain extends JFrame {
 
     final String TITLE_OF_PROGRAM = "Mines";
-//    final String SIGN_OF_FLAG = "f";
     final int BLOCK_SIZE = 30; // size of one block
     final int FIELD_SIZE = 9; // in blocks
     final int FIELD_DX = 6; // determined experimentally
     final int FIELD_DY = 28 + 17;
     final int START_LOCATION = 200;
-//    final int MOUSE_BUTTON_LEFT = 1; // for mouse listener
-//    final int MOUSE_BUTTON_RIGHT = 3;
     final int NUMBER_OF_MINES = 10;
     final int[] COLOR_OF_NUMBERS = {0x0000FF, 0x008000, 0xFF0000, 0x800000, 0x0};
-//    Cell[][] field = new Cell[FIELD_SIZE][FIELD_SIZE];
-//    Random random = new Random();
-//    int countOpenedCells;
-    boolean youWon, bangMine; // flags for win and bang/fail
-//    int bangX, bangY; // for fix the coordinates of the explosion
+    private boolean youWon, bangMine; // flags for win and bang/fail
     final GuiGameMines gm;
 
     public static void main(String[] args) {
@@ -48,18 +41,16 @@ class GuiMain extends JFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                int x = e.getX() / BLOCK_SIZE;
-                int y = e.getY() / BLOCK_SIZE;
-                int m = e.getButton() - 1;
                 if (!bangMine && !youWon) {
-                    gm.xChois = x;
-                    gm.yChois = y;
-                    gm.thinkBombChois = ((m == 0) ? false : true);
+                    int m = e.getButton() - 1;
+                    gm.xChois = e.getX() / BLOCK_SIZE;
+                    gm.yChois = e.getY() / BLOCK_SIZE;
+                    gm.thinkBombChois = ((m != 0) ? true : false);
                     int cont = gm.oneStep();
                     gm.paintPrepare(cont);
-                        youWon = cont > 0;
-                        bangMine = cont < 0;
-                        canvas.repaint();
+                    youWon = cont > 0;
+                    bangMine = cont < 0;
+                    canvas.repaint();
                 }
                 if (bangMine || youWon)
                     timeLabel.stopTimer(); // game over
@@ -71,14 +62,6 @@ class GuiMain extends JFrame {
     }
 
     class Celll { // playing field cell
-        private int countBombNear;
-        private boolean isOpen, isMine, isFlag;
-
-/*        void open() {
-            isOpen = true;
-            bangMine = isMine;
-            if (!isMine) countOpenedCells++;
-        }*/
 
         void paintBomb(Graphics g, int x, int y, Color color) {
             g.setColor(color);
@@ -114,7 +97,6 @@ class GuiMain extends JFrame {
             if(ss.equals("B")){paintBomb(g, x, y, Color.black);return;}
             if(ss.equals("b")){paintBomb(g, x, y, Color.gray);return;}
             paintString(g, ss, x, y, Color.red);
-            return;
         }
     }
 

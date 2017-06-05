@@ -1,58 +1,54 @@
 package nuevo.bombero;
 
-/**
- * Created by Padre on 03.06.2017.
- */
-public class Cell {
+class Cell {
     private boolean isMine;
     private boolean isOpen;
     private boolean isMarktAsBomb;
     private int countNeighbors;
 
-    public boolean isMarktAsBomb() {
+    boolean isMarktAsBomb() {
         return isMarktAsBomb;
     }
 
-    public boolean isMine() {
+    boolean isMine() {
         return isMine;
     }
 
-    public void setMine(boolean mine) {
+    void setMine(boolean mine) {
         isMine = mine;
     }
 
-    public boolean isOpen() {
+    boolean isOpen() {
         return isOpen;
     }
 
-    public void setOpen(boolean open) {
+    void setOpen(boolean open) {
         isOpen = open;
     }
 
-    public int getCountNeighbors() {
+    int getCountNeighbors() {
         return countNeighbors;
     }
 
-    public void setCountNeighbors(int countNeighbors) {
+    void setCountNeighbors(int countNeighbors) {
         this.countNeighbors = countNeighbors;
     }
 
 
-    public Cell() {
+    Cell() {
     }
 
-    public boolean makeJob(boolean markAsBomb) {
+    int makeJob(boolean markAsBomb) {
         if (markAsBomb) {       //помечаем-распомечаем ячейку - бомба
             this.isMarktAsBomb=!this.isMarktAsBomb;
-            return true;
-//            return false;
+            return 0;
         }
 //        открываем ячейку
         if (!this.isMine) { // если не бомба, говорим,что надо открыть её и окружение
-            return true;
+            return 1;
         } else {            // открываем бомбу, обрабоку передаём наверх
             this.isOpen = true;
-            return false;
+            return -1;
         }
     }
 }

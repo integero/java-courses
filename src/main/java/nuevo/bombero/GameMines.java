@@ -28,14 +28,13 @@ public class GameMines {
                 field[j][i] = new Cell();
     }
 
-
-    public void run() {
+    //  консольная версия
+    void run() {
         initMines(nuberOfMines);
         do {
             paintPrepare(0);
             print();
             getChois(); // получаем координаты и действие xt,yt,markBomb
-
         } while (oneStep()==0);
         if (openedCells == cellsWithoutBombs)
             paintPrepare(1);
@@ -48,28 +47,25 @@ public class GameMines {
         int continueGame = 0;
         Cell ce = field[xChois][yChois];
         if (ce.isOpen()) return continueGame;
+        int choisResult = ce.makeJob(thinkBombChois);
+        if (choisResult == 0) return continueGame;
         //        если не бомба,
-        if (ce.makeJob(thinkBombChois)) {    // не бомба, открываем всё, что возможно
-            if (!ce.isMarktAsBomb()){
+        if (choisResult == 1) {    // не бомба, открываем всё, что возможно
             if (ce.getCountNeighbors() == 0)
                 cellsOpen(xChois, yChois);
             else {
                 ce.setOpen(true);
                 openedCells++;
             }
-            }
-
-        } else {    // БОМБА или пометка. Если БОМБА, решаем что делать
-            if (ce.isMine())
-                continueGame = -1;
-//                continueGame = bombOpen(ce);
+        } else {    // БОМБА или пометка.
+            if (ce.isMine()) continueGame = -1;
         }
         if (openedCells == cellsWithoutBombs) continueGame = 1;
-
         return continueGame;
     }
 
-    void cellsOpen(int x, int y) {
+    //  открытие ячеек
+    private void cellsOpen(int x, int y) {
         if (!isIn(x, y)) return;
         Cell ce = field[x][y];
         if (ce.isOpen() || ce.isMine()) return;
@@ -83,6 +79,7 @@ public class GameMines {
         }
     }
 
+    //  установка мин и подсчет мин в соседних ячейках
     void initMines(int nMines) {
         Cell ce;
         int coM = 0;
@@ -105,18 +102,14 @@ public class GameMines {
         }
     }   // похоже надо вынести
 
-    protected boolean isIn(int x, int y) {
+    //  находится ли координаты (x,y) в поле игры
+    private boolean isIn(int x, int y) {
         if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) return false;
         return true;
     }
 
-//    private int bombOpen(Cell ce) {
-//        return !(ce.isMine() && ce.isOpen());
-//    }
-
-
+    //  подготовка информации для вывода на консоль(GUI) в зависимости от ситуации (-1- взрыв,0- продолжение, 1- победа)
     public void paintPrepare(int loseStepWin) {
-
         String s;
         Cell ce;
         for (int i = 0; i < boardSize; i++) {
@@ -137,10 +130,10 @@ public class GameMines {
                 prFi[i][j] = s;
             }
         }
-//        print();
     }
 
-    String mineSign(Cell ce, int loseStepWin) {
+    //  выбор изображениябомбы в зависимости от ситуации
+    private String mineSign(Cell ce, int loseStepWin) {
         String s;
         if (ce.isOpen()) {
             s = (loseStepWin == -1) ? "Z" : (loseStepWin == 0) ? "b" : "B";
@@ -150,25 +143,27 @@ public class GameMines {
         return s;
     }
 
-    public void getChois() {
+    //  ввод координат и действия с консоли, если третьего параметра нет или он равен 0 - открываем ячейку
+//  иаче помечаем-распомечаем
+    private void getChois() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         do {
             try {
                 String[] s = reader.readLine().split(" ");
                 if (s.length < 2) continue;
-                xChois = Integer.parseInt(s[0]);
-                yChois = Integer.parseInt(s[1]);
+                xChois = Integer.parseInt(s[1]);
+                yChois = Integer.parseInt(s[0]);
                 thinkBombChois = (s.length == 2) ? false : (Integer.parseInt(s[2]) == 0) ? false : true;
             } catch (IOException e) {
             }catch(NumberFormatException e){
                 xChois = -1;
                 yChois = -1;
             }
-
         } while (!isIn(xChois,yChois));
     }
 
-    public void print() {
+    //  вывод в консоль
+    private void print() {
         System.out.print("   ");
         for (int i = 0; i < boardSize; i++)
             System.out.print("(" + i + ")");
