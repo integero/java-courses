@@ -1,4 +1,7 @@
 Правила взяты из
  http://play-minesweeper.com/
+
 GuiMain переделан из
  https://github.com/biblelamp/JavaExercises/blob/master/GameMines.java
+
+ Cell сделан внешним для возможной модификации независимо от GameMines
